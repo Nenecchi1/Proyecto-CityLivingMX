@@ -1,4 +1,4 @@
-package org.example.proyectocityliving;
+package org.example.proyectoicityliving;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

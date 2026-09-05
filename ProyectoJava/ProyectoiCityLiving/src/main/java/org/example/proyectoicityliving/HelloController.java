@@ -1,4 +1,4 @@
-package org.example.proyectocityliving;
+package org.example.proyectoicityliving;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

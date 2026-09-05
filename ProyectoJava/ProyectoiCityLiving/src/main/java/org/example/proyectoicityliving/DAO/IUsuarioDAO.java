@@ -1,4 +1,4 @@
-package org.example.proyectocityliving.DAO;
+package org.example.proyectoicityliving.DAO;
 
 import java.io.IOException;
 import org.example.proyectocityliving.Model.Usuario;

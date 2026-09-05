@@ -1,4 +1,4 @@
-module org.example.proyectocityliving {
+module org.example.proyectoicityliving {
     requires javafx.controls;
     requires javafx.fxml;
 

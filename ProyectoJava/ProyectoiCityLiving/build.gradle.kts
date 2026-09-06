@@ -27,7 +27,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("org.example.proyectoicityliving")
-    mainClass.set("org.example.proyectoicityliving.HelloApplication")
+    mainClass.set("org.example.proyectoicityliving.Main")
 }
 
 javafx {
@@ -53,6 +53,6 @@ jlink {
     imageZip.set(layout.buildDirectory.file("/distributions/app-${javafx.platform.classifier}.zip"))
     options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
     launcher {
-        name = "app"
+        name = "Main"
     }
 }

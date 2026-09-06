@@ -1,4 +1,4 @@
-package org.example.proyectoicityliving.Exception;
+package org.example.proyectoicityliving.exception;
 
 /**
  * Excepción de seguridad lanzada al acumular 3 intentos fallidos consecutivos

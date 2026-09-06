@@ -1,4 +1,4 @@
-package org.example.proyectoicityliving.Exception;
+package org.example.proyectoicityliving.exception;
 
 /**
  * Excepción lanzada cuando el correo electrónico proporcionado no existe

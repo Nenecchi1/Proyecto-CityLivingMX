@@ -4,15 +4,26 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class LoginVista implements ILoginVista {
+/**
+ * Vista de inicio de sesión integrada con las dimensiones globales y utilidades de {@link VistaBase}.
+ * <p>
+ * Proporciona la interfaz gráfica para el control de accesos de usuarios,
+ * con soporte para enmascaramiento reactivo de contraseña, sincronización bidireccional
+ * de texto y protección contra pegado no autorizado durante bloqueos.
+ * </p>
+ *
+ * @author Jardines Bandala Luis Antonio
+ * @version 3.1
+ */
+public class LoginVista extends VistaBase implements ILoginVista {
 
     private TextField campoCorreo;
     private PasswordField campoContrasena;
@@ -23,210 +34,174 @@ public class LoginVista implements ILoginVista {
     private Hyperlink linkRegistro;
     private Label labelMensajeError;
     private Label labelBienvenida;
-    private Stage stage;
 
+    /**
+     * Construye e inicializa la pantalla de autenticación y control de acceso.
+     *
+     * @param stage Escenario primario de JavaFX asignado a la ventana.
+     */
     public LoginVista(Stage stage) {
-        this.stage = stage;
+        super(stage);
 
-        // Contenedor principal usando StackPane para poner la imagen de fondo
-        StackPane root = new StackPane();
-        root.setAlignment(Pos.CENTER);
+        StackPane root = crearContenedorRaizConFondo();
+        root.getChildren().add(crearTarjetaLogin());
 
-        // CARGAR IMAGEN DE FONDO
-        try {
-            // Asegúrate de que "fondo.png" esté en la carpeta resources/.../images/
-            Image imagenFondo = new Image(getClass().getResourceAsStream("/org/example/proyectoicityliving/imagenes/fondo.png"));
-            if (imagenFondo != null && !imagenFondo.isError()) {
-                BackgroundImage bImg = new BackgroundImage(imagenFondo,
-                        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                        BackgroundPosition.CENTER,
-                        new BackgroundSize(100, 100, true, true, true, true));
-                root.setBackground(new Background(bImg));
-            } else {
-                root.setStyle("-fx-background-color: #1a1a2e;"); // Respaldo si no encuentra la imagen
-            }
-        } catch (Exception e) {
-            root.setStyle("-fx-background-color: #1a1a2e;"); // Respaldo si hay error
-        }
-
-        // Agregamos el formulario (tarjeta Glassmorphism) encima del fondo
-        root.getChildren().add(crearTerjetaLogin());
-
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, ANCHO_VENTANA, ALTO_VENTANA);
         this.stage.setTitle("City Living MX - Control de Accesos");
         this.stage.setScene(scene);
         this.stage.show();
     }
 
-    private VBox crearTerjetaLogin() {
-        VBox tarjetaLogin = new VBox(15);
+    /**
+     * Genera la tarjeta contenedora con todos los componentes y controles interactivos del Login.
+     *
+     * @return Contenedor {@link VBox} configurado con estilo Glassmorphism y dimensiones ajustadas.
+     */
+    private VBox crearTarjetaLogin() {
+        VBox tarjetaLogin = new VBox(12);
         tarjetaLogin.setAlignment(Pos.CENTER);
-        tarjetaLogin.setPadding(new Insets(40));
-        tarjetaLogin.setMaxWidth(400);
+        tarjetaLogin.setPadding(new Insets(30, 35, 30, 35));
+        tarjetaLogin.setMaxWidth(420);
 
-        // 2. ESTILO GLASSMORPHISM (Fondo semi-transparente, bordes redondeados y sombra)
         tarjetaLogin.setStyle(
-                "-fx-background-color: rgba(30, 35, 45, 0.7);" +
+                "-fx-background-color: rgba(30, 35, 45, 0.75);" +
                         "-fx-background-radius: 15;" +
                         "-fx-border-color: rgba(255, 255, 255, 0.15);" +
                         "-fx-border-radius: 15;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 10);"
         );
 
-        // 3. AGREGAR EL LOGO
-        ImageView logoView = new ImageView();
-        try {
-            // Asegúrate de que "logo.png" esté en la carpeta resources/.../images/
-            Image icono = new Image(getClass().getResourceAsStream("/org/example/proyectoicityliving/imagenes/logo.png"));
-            if (icono != null && !icono.isError()) {
-                logoView.setImage(icono);
-                logoView.setFitWidth(100);
-                logoView.setPreserveRatio(true);
-            }
-        } catch (Exception e) {
-            // Si no carga la imagen, no falla el programa, solo no muestra logo
-        }
+        ImageView logoView = crearLogo(90);
 
         Label labelTitulo = new Label("City Living MX");
-        labelTitulo.setFont(Font.font("System", FontWeight.BOLD, 28));
+        labelTitulo.setFont(Font.font("System", FontWeight.BOLD, 26));
         labelTitulo.setTextFill(Color.WHITE);
-
-        Label labelSubtitulo = new Label("Renta de departamentos y casas");
-        labelSubtitulo.setFont(Font.font("System", 16));
-        labelSubtitulo.setTextFill(Color.rgb(180, 180, 200));
 
         Label labelCorreo = new Label("Correo electrónico:");
         labelCorreo.setTextFill(Color.rgb(180, 180, 200));
-        labelCorreo.setFont(Font.font("System", 12));
 
         campoCorreo = new TextField();
         campoCorreo.setPromptText("usuario@example.com");
-        campoCorreo.setPrefHeight(40);
+        campoCorreo.setPrefHeight(38);
         campoCorreo.setStyle(estilosCampoTexto());
 
         Label labelContrasena = new Label("Contraseña:");
         labelContrasena.setTextFill(Color.rgb(180, 180, 200));
-        labelContrasena.setFont(Font.font("System", 12));
 
         campoContrasena = new PasswordField();
-        campoContrasena.setPromptText("Minimo 8 caracteres");
-        campoContrasena.setPrefHeight(40);
+        campoContrasena.setPromptText("Mínimo 8 caracteres");
+        campoContrasena.setPrefHeight(38);
         campoContrasena.setStyle(estilosCampoTexto());
 
         campoContrasenaVisible = new TextField();
-        campoContrasenaVisible.setPromptText("Minimo 8 caracteres");
-        campoContrasenaVisible.setPrefHeight(40);
+        campoContrasenaVisible.setPromptText("Mínimo 8 caracteres");
+        campoContrasenaVisible.setPrefHeight(38);
         campoContrasenaVisible.setStyle(estilosCampoTexto());
-        campoContrasenaVisible.setVisible(false);
-        campoContrasenaVisible.setManaged(false);
 
         StackPane contenedorContrasena = new StackPane(campoContrasena, campoContrasenaVisible);
 
         checkMostrarContrasena = new CheckBox("Mostrar contraseña");
         checkMostrarContrasena.setTextFill(Color.rgb(180, 180, 200));
-        checkMostrarContrasena.setFont(Font.font("System", 11));
+
         configurarToggleContrasena();
 
         labelMensajeError = new Label();
         labelMensajeError.setTextFill(Color.rgb(255, 100, 100));
-        labelMensajeError.setFont(Font.font("System", 12));
         labelMensajeError.setWrapText(true);
-        labelMensajeError.setMaxWidth(320);
+        labelMensajeError.setPrefWidth(350);
+        labelMensajeError.setMaxWidth(350);
+        labelMensajeError.setMinHeight(Region.USE_PREF_SIZE);
+        labelMensajeError.setAlignment(Pos.CENTER);
+        labelMensajeError.setTextAlignment(TextAlignment.CENTER);
         labelMensajeError.setVisible(false);
 
         labelBienvenida = new Label();
         labelBienvenida.setTextFill(Color.rgb(100, 255, 150));
-        labelBienvenida.setFont(Font.font("System", FontWeight.BOLD, 14));
         labelBienvenida.setWrapText(true);
-        labelBienvenida.setMaxWidth(320);
+        labelBienvenida.setPrefWidth(350);
+        labelBienvenida.setMaxWidth(350);
+        labelBienvenida.setMinHeight(Region.USE_PREF_SIZE);
+        labelBienvenida.setAlignment(Pos.CENTER);
+        labelBienvenida.setTextAlignment(TextAlignment.CENTER);
         labelBienvenida.setVisible(false);
 
         botonLogin = new Button("Iniciar sesión");
-        botonLogin.setPrefHeight(42);
-        botonLogin.setPrefWidth(320);
+        botonLogin.setPrefHeight(38);
+        botonLogin.setPrefWidth(350);
         botonLogin.setStyle(estilosBotonPrimario());
-        botonLogin.setFont(Font.font("System", FontWeight.BOLD, 14));
 
         botonLimpiar = new Button("Limpiar");
-        botonLimpiar.setPrefHeight(36);
-        botonLimpiar.setPrefWidth(320);
+        botonLimpiar.setPrefHeight(34);
+        botonLimpiar.setPrefWidth(350);
         botonLimpiar.setStyle(estilosBotonSecundario());
-        botonLimpiar.setFont(Font.font("System", 12));
-        botonLimpiar.setOnAction(e -> limpiarCampos());
+        botonLimpiar.setOnAction(e -> habilitarVista());
 
         linkRegistro = new Hyperlink("¿No tienes cuenta? Regístrate aquí");
         linkRegistro.setTextFill(Color.rgb(100, 150, 255));
-        linkRegistro.setFont(Font.font("System", 12));
-        linkRegistro.setStyle("-fx-border-color: transparent;");
 
-        // Ensamblar
         if (logoView.getImage() != null) {
-            tarjetaLogin.getChildren().add(logoView); // Agrega el logo arriba del título si existe
+            tarjetaLogin.getChildren().add(logoView);
         }
 
         tarjetaLogin.getChildren().addAll(
-                labelTitulo,
-                labelSubtitulo,
-                labelCorreo,
-                campoCorreo,
-                labelContrasena,
-                contenedorContrasena,
-                checkMostrarContrasena,
-                labelMensajeError,
-                labelBienvenida,
-                botonLogin,
-                botonLimpiar,
-                linkRegistro
+                labelTitulo, labelCorreo, campoCorreo,
+                labelContrasena, contenedorContrasena, checkMostrarContrasena,
+                labelMensajeError, labelBienvenida, botonLogin, botonLimpiar, linkRegistro
         );
 
         return tarjetaLogin;
     }
 
+    /**
+     * Enlaza bidireccionalmente el texto entre ambos campos y vincula su visibilidad
+     * de forma estrictamente reactiva con el estado del CheckBox.
+     */
     private void configurarToggleContrasena() {
-        checkMostrarContrasena.setOnAction(e -> {
-            if (checkMostrarContrasena.isSelected()) {
-                campoContrasenaVisible.setText(campoContrasena.getText());
-                campoContrasena.setVisible(false);
-                campoContrasena.setManaged(false);
-                campoContrasenaVisible.setVisible(true);
-                campoContrasenaVisible.setManaged(true);
-            } else {
-                campoContrasena.setText(campoContrasenaVisible.getText());
-                campoContrasenaVisible.setVisible(false);
-                campoContrasenaVisible.setManaged(false);
-                campoContrasena.setVisible(true);
-                campoContrasena.setManaged(true);
-            }
-        });
+        campoContrasena.textProperty().bindBidirectional(campoContrasenaVisible.textProperty());
+
+        campoContrasenaVisible.visibleProperty().bind(checkMostrarContrasena.selectedProperty());
+        campoContrasenaVisible.managedProperty().bind(checkMostrarContrasena.selectedProperty());
+
+        campoContrasena.visibleProperty().bind(checkMostrarContrasena.selectedProperty().not());
+        campoContrasena.managedProperty().bind(checkMostrarContrasena.selectedProperty().not());
     }
 
+    /**
+     * Restablece los valores de las entradas de texto e inhabilita las etiquetas de retroalimentación.
+     */
     private void limpiarCampos() {
         campoCorreo.clear();
         campoContrasena.clear();
-        campoContrasenaVisible.clear();
         checkMostrarContrasena.setSelected(false);
         labelMensajeError.setVisible(false);
         labelBienvenida.setVisible(false);
-        campoContrasenaVisible.setVisible(false);
-        campoContrasenaVisible.setManaged(false);
-        campoContrasena.setVisible(true);
-        campoContrasena.setManaged(true);
     }
 
+    /**
+     * Obtiene el correo electrónico ingresado en la interfaz sin espacios periféricos.
+     *
+     * @return Cadena de texto con el correo del usuario.
+     */
     @Override
     public String getCorreo() {
         return campoCorreo.getText().trim();
     }
 
+    /**
+     * Obtiene la contraseña ingresada en el formulario.
+     *
+     * @return Cadena de texto con la contraseña activa.
+     */
     @Override
     public String getContrasena() {
-        if (checkMostrarContrasena.isSelected()) {
-            return campoContrasenaVisible.getText();
-        } else {
-            return campoContrasena.getText();
-        }
+        return campoContrasena.getText();
     }
 
+    /**
+     * Despliega un mensaje de error o advertencia formateado y envuelto según el ancho disponible.
+     *
+     * @param mensaje Texto explicativo del fallo.
+     */
     @Override
     public void mostrarError(String mensaje) {
         labelBienvenida.setVisible(false);
@@ -234,59 +209,76 @@ public class LoginVista implements ILoginVista {
         labelMensajeError.setVisible(true);
     }
 
+    /**
+     * Despliega la confirmación de autenticación exitosa indicando el nombre de usuario y su rol.
+     *
+     * @param nombreUsuario Nombre completo del usuario autenticado.
+     * @param rolUsuario   Rol asignado en el sistema.
+     */
     @Override
     public void mostrarBienvenida(String nombreUsuario, String rolUsuario) {
         labelMensajeError.setVisible(false);
-        // Corrección del espacio agregada aquí
-        labelBienvenida.setText("✅ Bienvenido al sistema " + nombreUsuario + " (" + rolUsuario + ")");
+        labelBienvenida.setText("✅ Bienvenido " + nombreUsuario + " (" + rolUsuario + ")");
         labelBienvenida.setVisible(true);
     }
 
+    /**
+     * Inhabilita la edición e interacción con los campos tras un bloqueo de cuenta
+     * y transfiere el foco al botón de limpieza para mitigar atajos de teclado como Ctrl+V.
+     */
     @Override
-    public void inabilitarVista() {
+    public void inhabilitarVista() {
+        campoCorreo.setEditable(false);
+        campoContrasena.setEditable(false);
+        campoContrasenaVisible.setEditable(false);
+
         campoCorreo.setDisable(true);
         campoContrasena.setDisable(true);
         campoContrasenaVisible.setDisable(true);
         checkMostrarContrasena.setDisable(true);
         botonLogin.setDisable(true);
-        botonLimpiar.setDisable(true);
         linkRegistro.setDisable(true);
-        mostrarError("Cuenta bloqueada por seguridad. Contacte al centro de soporte.");
+
+        botonLimpiar.requestFocus();
+        mostrarError("Cuenta bloqueada por seguridad. Presione 'Limpiar' para reiniciar.");
     }
 
+    /**
+     * Habilita nuevamente la edición en los controles de la interfaz y limpia el formulario.
+     */
     @Override
-    public Button getBotonLogin() { return botonLogin; }
+    public void habilitarVista() {
+        campoCorreo.setEditable(true);
+        campoContrasena.setEditable(true);
+        campoContrasenaVisible.setEditable(true);
 
-    @Override
-    public Hyperlink getLinkRegistro() { return linkRegistro; }
+        campoCorreo.setDisable(false);
+        campoContrasena.setDisable(false);
+        campoContrasenaVisible.setDisable(false);
+        checkMostrarContrasena.setDisable(false);
+        botonLogin.setDisable(false);
+        linkRegistro.setDisable(false);
 
-    @Override
-    public Stage getStage() { return stage; }
-
-    // 4. ESTILOS MODIFICADOS PARA QUE SEAN TRANSPARENTES
-    private String estilosCampoTexto() {
-        return "-fx-background-color: rgba(255, 255, 255, 0.05);" + // Casi transparente
-                "-fx-text-fill: white;" +
-                "-fx-prompt-text-fill: rgba(255, 255, 255, 0.5);" + // Letra blanca tenue
-                "-fx-background-radius: 8;" +
-                "-fx-border-color: rgba(255, 255, 255, 0.4);" + // Borde blanco visible
-                "-fx-border-radius: 8;" +
-                "-fx-padding: 8 12;";
+        limpiarCampos();
     }
 
-    private String estilosBotonPrimario() {
-        return "-fx-background-color: #2979ff;" + // Azul más vivo
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 8;" +
-                "-fx-cursor: hand;";
+    /**
+     * Obtiene la referencia al botón de inicio de sesión.
+     *
+     * @return Componente {@link Button} de inicio de sesión.
+     */
+    @Override
+    public Button getBotonLogin() {
+        return botonLogin;
     }
 
-    private String estilosBotonSecundario() {
-        return "-fx-background-color: rgba(255, 255, 255, 0.1);" +
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 8;" +
-                "-fx-border-color: rgba(255, 255, 255, 0.3);" +
-                "-fx-border-radius: 8;" +
-                "-fx-cursor: hand;";
+    /**
+     * Obtiene la referencia al enlace de registro.
+     *
+     * @return Componente {@link Hyperlink} para la navegación al registro.
+     */
+    @Override
+    public Hyperlink getLinkRegistro() {
+        return linkRegistro;
     }
 }

@@ -1,3 +1,0 @@
-1|erick.polanco@cityliving.mx|Password123#|Erick Polanco|Administrador
-2|antonio.jardines@cityliving.mx|User2026$&|Luis Antonio Jardines|Usuario
-3|raul.jara@cityliving.mx|Profesor2026#|Raul Jara|Administrador

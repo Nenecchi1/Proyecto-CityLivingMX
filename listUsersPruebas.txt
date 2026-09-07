@@ -1,0 +1,38 @@
+Lista con usuarios y administradores registrados
+
+1) Administradores
+
+correo:erick.polanco@cityliving.mx
+contraseña:Password123#
+estado:Activo
+
+correo:antonio.jardines@cityliving.mx
+contraseña:Password2026$&
+estado:Activo
+
+2) Usuarios
+
+correo:raul.jara@cityliving.mx
+contraseña:Profesor2026#
+estado:Activo
+
+correo:ninja.copia@cityliving.mx
+contraseña:Obito2026#
+estado:Activo
+
+ // contraseña sin los requisitos de segurida guardada
+correo:Yamsha.lindo@cityliving.mx
+contraseña:puar
+estado:Activo
+
+ 3) bloqueadas
+correo:usuario.bloqueado@cityliving.mx
+contraseña:UserBloqueado2026#
+estado:Bloqueado
+
+correo:admin.bloqueado@cityliving.mx
+contraseña:AdminBloqueado2026#
+estado:Bloqueado
+
+
+

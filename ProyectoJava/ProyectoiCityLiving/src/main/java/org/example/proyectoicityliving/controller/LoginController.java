@@ -1,124 +1,112 @@
 package org.example.proyectoicityliving.controller;
 
-import org.example.proyectoicityliving.DAO.IUsuarioDAO;
-import org.example.proyectoicityliving.DAO.UsuarioTXT;
-import org.example.proyectoicityliving.views.ILoginVista;
-import org.example.proyectoicityliving.model.IUsuario;
-
-import org.example.proyectoicityliving.exception.FormatoInvalidoException;
+import javafx.stage.Stage;
+import org.example.proyectoicityliving.exception.PasswordIncorrectoException;
+import org.example.proyectoicityliving.exception.PersistenciaException;
 import org.example.proyectoicityliving.exception.UsuarioNoEncontradoException;
-import org.example.proyectoicityliving.exception.CuentaBloqueadaException;
-
-import java.io.IOException;
+import org.example.proyectoicityliving.model.IUsuario;
+import org.example.proyectoicityliving.service.IUsuarioService;
+import org.example.proyectoicityliving.views.AdministradorVista;
+import org.example.proyectoicityliving.views.ILoginVista;
+import org.example.proyectoicityliving.views.RegistroVista;
+import org.example.proyectoicityliving.views.UsuarioVista;
 
 /**
- * Clase LoginController que se encarga de controlar la vista de login
+ * Controlador encargado de coordinar el proceso de inicio de sesión.
+ * <p>
+ * Vincula la interfaz {@link ILoginVista} con la capa {@link IUsuarioService},
+ * ejecutando la validación sintáctica del dominio en el cliente antes de la consulta
+ * en la capa de almacenamiento y redirigiendo hacia el panel correspondiente.
+ * </p>
  *
- * Maneja la interacción entre la vista de login y el modelo de usuario,
- * permitiendo que los usuarios inicien sesión en la aplicación.
+ * @author Polanco Romero Erick
+ * @author Jardines Bandala Luis Antonio
+ * @version 3.0
  */
 public class LoginController {
 
-    private final ILoginVista vista;
-    private final IUsuarioDAO usuarioDAO;
+    /** Expresión regular para validar el formato de correo con el dominio institucional. */
+    private static final String REGEX_CORREO_DOMINIO = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
-    //conteo de intentos de inicio de sesión fallidos
-    private int intentosFallidos = 0;
-    private static final int MAX_INTENTOS = 3;
+    /** Vista de inicio de sesión. */
+    private final ILoginVista vista;
+
+    /** Servicio de autenticación y lógica de negocio. */
+    private final IUsuarioService usuarioService;
 
     /**
-     * Constructor de LoginController
+     * Construye e inicializa el controlador de inicio de sesión vinculando eventos de la vista.
      *
-     * @param vista la vista de login que se controlará
+     * @param vista          Instancia de la vista que implementa {@link ILoginVista}.
+     * @param usuarioService Servicio de negocio que implementa {@link IUsuarioService}.
      */
-    public LoginController(ILoginVista vista) {
-        this.vista = vista;// Inicializa la vista de login
-        this.usuarioDAO = new UsuarioTXT(); // Inicializa el DAO de usuario
-
-        this.vista.getBotonLogin().setOnAction(event -> procesarInicioSesion());
-        this.vista.getLinkRegistro().setOnAction(event -> navegarARegistro());
+    public LoginController(ILoginVista vista, IUsuarioService usuarioService) {
+        this.vista = vista;
+        this.usuarioService = usuarioService;
+        inicializarEventos();
     }
 
     /**
-     * Lógica principal que se ejecuta al presionar "Iniciar Sesión"
+     * Asigna las acciones de los botones a sus métodos correspondientes.
      */
-    private void procesarInicioSesion() {
-        // Obtener datos de la vista a través de la interfaz
+    private void inicializarEventos() {
+        this.vista.getBotonLogin().setOnAction(e -> procesarAutenticacion());
+        this.vista.getLinkRegistro().setOnAction(e -> abrirRegistro());
+    }
+
+    /**
+     * Captura las credenciales, valida previamente la sintaxis y el dominio del correo en el cliente,
+     * e invoca la autenticación en el servicio solo si el formato es correcto.
+     */
+    public void procesarAutenticacion() {
         String correo = vista.getCorreo();
         String contrasena = vista.getContrasena();
 
+        if (correo.isEmpty() || contrasena.isEmpty()) {
+            vista.mostrarError("Por favor, ingrese su correo y contraseña.");
+            return;
+        }
+
+        if (!correo.matches(REGEX_CORREO_DOMINIO)) {
+            vista.mostrarError("Dominio o formato de correo incorrecto. Formato esperado: usuario@cityliving.mx");
+            return;
+        }
+
         try {
-            // Validar formato (Regex) ANTES de consultar base de datos
-            validarFormato(correo, contrasena);
+            IUsuario usuarioAutenticado = usuarioService.autenticar(correo, contrasena);
+            vista.mostrarBienvenida(usuarioAutenticado.getNombre(), usuarioAutenticado.getRol());
 
-            // Autenticar contra el DAO (Una sola lectura a disco para optimizar rendimiento)
-            IUsuario usuario = usuarioDAO.buscarPorCorreo(correo);
+            Stage stage = vista.getStage();
+            String rol = usuarioAutenticado.getRol();
 
-            // Verificar si el usuario no existe
-            if (usuario == null) {
-                throw new UsuarioNoEncontradoException("El usuario no está registrado.");
-            }
-
-            // 4. Validar si la contraseña es correcta
-            if (usuario.getContrasena().equals(contrasena)) {
-                // Login exitoso: Resetear intentos
-                intentosFallidos = 0;
-
-                // Enviar mensaje de éxito a la vista
-                vista.mostrarBienvenida(usuario.getNombre(), usuario.getRol());
-
-                // TODO: Aquí navegaremos al Dashboard según el rol del usuario
-
+            if (rol != null && (rol.equalsIgnoreCase("ADMINISTRADOR") || rol.equalsIgnoreCase("ADMIN"))) {
+                AdministradorVista adminVista = new AdministradorVista(stage);
+                adminVista.setNombreAdministrador(usuarioAutenticado.getNombre());
+                new AdministradorController(adminVista, usuarioService);
             } else {
-                // Login fallido: Incrementar contador ANTES de evaluar el límite
-                intentosFallidos++;
-
-                // Validar bloqueo inmediato si alcanza los 3 fallos
-                if (intentosFallidos >= MAX_INTENTOS) {
-                    throw new CuentaBloqueadaException("Cuenta bloqueada por seguridad.");
-                } else {
-                    vista.mostrarError("Contraseña incorrecta. Intento " + intentosFallidos + " de " + MAX_INTENTOS + ".");
-                }
+                UsuarioVista usuarioVista = new UsuarioVista(stage);
+                usuarioVista.setNombreUsuario(usuarioAutenticado.getNombre());
+                new UsuarioController(usuarioVista, usuarioService, usuarioAutenticado);
             }
 
-            // Manejo de excepciones personalizadas
-        } catch (FormatoInvalidoException e) {
+        } catch (UsuarioNoEncontradoException | PasswordIncorrectoException e) {
             vista.mostrarError(e.getMessage());
 
-        } catch (UsuarioNoEncontradoException e) {
-            vista.mostrarError(e.getMessage() + " Regístrese.");
+            if (e.getMessage().toLowerCase().contains("bloqueada")) {
+                vista.inhabilitarVista();
+            }
 
-        } catch (CuentaBloqueadaException e) {
-            // Deshabilita la interfaz respetando la sintaxis original de tu clase
-            vista.inabilitarVista();
-
-        } catch (IOException e) {
-            // Captura específica del error de lectura de archivo en lugar de Exception genérica
-            vista.mostrarError("Error del sistema: No se pudo acceder a la base de datos.");
-            e.printStackTrace();
+        } catch (PersistenciaException e) {
+            vista.mostrarError("Error crítico de almacenamiento: " + e.getMessage());
         }
     }
 
     /**
-     * Valida el correo y contraseña con Expresiones Regulares
+     * Redirige la navegación a la pantalla de registro e inicializa su controlador.
      */
-    private void validarFormato(String correo, String contrasena) throws FormatoInvalidoException {
-        // Regla de formato para correo electrónico
-        if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new FormatoInvalidoException("Formato de correo inválido (ej: usuario@dominio.com).");
-        }
-
-        //Regla restrictiva para contraseña (min 8 chars, 1 mayus, 1 minus, 1 num, 1 especial restrictivo)
-        if (!contrasena.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[#$&])[A-Za-z\\d#$&]{8,}$")) {
-            throw new FormatoInvalidoException("La contraseña debe tener mínimo 8 caracteres, mayúsculas, minúsculas, números y un carácter especial (#, $, &).");
-        }
-    }
-
-    /**
-     * Lógica para cambiar la vista a la pantalla de registro
-     */
-    private void navegarARegistro() {
-        System.out.println("Navegando a la vista de registro...");
-        // TODO: Lógica para cambiar la escena en JavaFX
+    private void abrirRegistro() {
+        Stage stage = vista.getStage();
+        RegistroVista registroVista = new RegistroVista(stage);
+        new RegistroController(registroVista, usuarioService);
     }
 }

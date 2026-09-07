@@ -1,16 +1,19 @@
 package org.example.proyectoicityliving.exception;
+
 /**
- * Excepción lanzada cuando las credenciales ingresadas no cumplen con los
- * patrones de Expresiones Regulares (Regex) establecidos para correo o contraseña.
- * <p>
- * Apoya el pilar de Usabilidad de ISO/IEC 25010 al validar sintaxis en el cliente
- * antes de realizar consultas de lectura I/O.
- * </p>
+ * Excepción personalizada para notificar el incumplimiento de las reglas
+ * de formato en credenciales (RS-01 y RS-02)[cite: 27].
  *
  * @author Polanco Romero Erick
- * @version 1.0
+ * @version 1.3
  */
 public class FormatoInvalidoException extends Exception {
+
+    /**
+     * Construye la excepción con un mensaje explicativo del fallo de formato.
+     *
+     * @param mensaje Detalle del requisito de seguridad no cumplido.
+     */
     public FormatoInvalidoException(String mensaje) {
         super(mensaje);
     }

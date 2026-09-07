@@ -11,7 +11,6 @@ import org.example.proyectoicityliving.model.IUsuario;
  * autenticación, registro y control de accesos[cite: 27, 28].
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public interface IUsuarioService {

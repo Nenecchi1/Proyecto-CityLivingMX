@@ -4,7 +4,6 @@ package org.example.proyectoicityliving.model;
  * Clase abstracta plantilla para todos los tipos de usuarios con lógica encapsulada de seguridad[cite: 27, 32].
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public abstract class Usuario implements IUsuario {

@@ -9,9 +9,8 @@ import org.example.proyectoicityliving.views.UsuarioVista;
 /**
  * Controlador encagado del filtrado y navegación dentro del catálogo de inmuebles[cite: 23].
  *
- * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 2.8
+ * @version 1.8
  */
 public class CatalogoController {
 

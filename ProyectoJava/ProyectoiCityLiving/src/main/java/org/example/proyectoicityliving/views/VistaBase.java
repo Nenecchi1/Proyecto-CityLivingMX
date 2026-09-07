@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  * </p>
  *
  * @author Jardines Bandala Luis Antonio
- * @version 2.5
+ * @version 1.5
  */
 public abstract class VistaBase {
 

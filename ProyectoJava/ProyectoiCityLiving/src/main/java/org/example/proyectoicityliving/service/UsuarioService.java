@@ -17,7 +17,6 @@ import org.example.proyectoicityliving.model.UsuarioGeneral;
  * </p>
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public class UsuarioService implements IUsuarioService {

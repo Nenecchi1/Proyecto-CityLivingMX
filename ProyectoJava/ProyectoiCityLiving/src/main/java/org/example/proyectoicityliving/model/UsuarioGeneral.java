@@ -4,7 +4,6 @@ package org.example.proyectoicityliving.model;
  * Representa a un cliente con perfil dual (Arrendador / Arrendatario)[cite: 27, 33].
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public class UsuarioGeneral extends Usuario {

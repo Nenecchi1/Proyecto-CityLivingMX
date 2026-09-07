@@ -4,7 +4,6 @@ package org.example.proyectoicityliving.model;
  * Representa a un usuario administrativo con facultades sobre la Mesa de Ayuda[cite: 27, 30].
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public class Administrador extends Usuario {

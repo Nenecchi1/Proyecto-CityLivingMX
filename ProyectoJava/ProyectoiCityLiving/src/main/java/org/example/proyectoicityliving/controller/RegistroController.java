@@ -21,7 +21,7 @@ import org.example.proyectoicityliving.views.RegistroVista;
  *
  * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 3.2
+ * @version 1.7
  */
 public class RegistroController {
 

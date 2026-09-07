@@ -8,7 +8,6 @@ package org.example.proyectoicityliving.model;
  * </p>
  *
  * @author Polanco Romero Erick
- * @author Jardines Bandala Luis Antonio
  * @version 1.5
  */
 public interface IUsuario {

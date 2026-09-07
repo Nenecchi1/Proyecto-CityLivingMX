@@ -11,9 +11,8 @@ import org.example.proyectoicityliving.views.UsuarioVista;
 /**
  * Controlador para la interacción con la interfaz gráfica del portal principal del cliente[cite: 26].
  *
- * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 2.8
+ * @version 1.8
  */
 public class UsuarioController {
 

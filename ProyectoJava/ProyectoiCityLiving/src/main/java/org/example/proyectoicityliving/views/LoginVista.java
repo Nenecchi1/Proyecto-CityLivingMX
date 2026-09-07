@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  * </p>
  *
  * @author Jardines Bandala Luis Antonio
- * @version 3.1
+ * @version 1.6
  */
 public class LoginVista extends VistaBase implements ILoginVista {
 

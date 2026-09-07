@@ -20,8 +20,9 @@ import javafx.stage.Stage;
  * confirmaciones de éxito multilínea sin truncamiento.
  * </p>
  *
+ * * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 3.2
+ * @version 1.7
  */
 public class RegistroVista extends VistaBase {
 

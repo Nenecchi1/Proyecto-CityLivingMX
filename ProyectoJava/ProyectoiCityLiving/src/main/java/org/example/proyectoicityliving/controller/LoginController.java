@@ -19,9 +19,8 @@ import org.example.proyectoicityliving.views.UsuarioVista;
  * en la capa de almacenamiento y redirigiendo hacia el panel correspondiente.
  * </p>
  *
- * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 3.0
+ * @version 1.8
  */
 public class LoginController {
 

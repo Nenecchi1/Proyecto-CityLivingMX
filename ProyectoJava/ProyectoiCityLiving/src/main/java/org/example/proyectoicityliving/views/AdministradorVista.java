@@ -17,9 +17,8 @@ import javafx.stage.Stage;
  * la estética corporativa y las dimensiones estándar de ventana.
  * </p>
  *
- * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 2.8
+ * @version 1.5
  */
 public class AdministradorVista extends VistaBase {
 

@@ -17,9 +17,8 @@ import javafx.stage.Stage;
  * filtros de categorías y gestión de sesión.
  * </p>
  *
- * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 2.8
+ * @version 1.8
  */
 public class UsuarioVista extends VistaBase {
 

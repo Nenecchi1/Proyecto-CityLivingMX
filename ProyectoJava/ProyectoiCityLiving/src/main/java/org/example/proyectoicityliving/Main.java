@@ -19,7 +19,7 @@ import org.example.proyectoicityliving.views.LoginVista;
  *
  * @author Polanco Romero Erick
  * @author Jardines Bandala Luis Antonio
- * @version 2.5
+ * @version 1.5
  */
 public class Main extends Application {
 
